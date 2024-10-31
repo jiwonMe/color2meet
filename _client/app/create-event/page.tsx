@@ -51,9 +51,12 @@ export default function CreateEvent() {
 
       if (error) throw error;
 
+      // 클립보드에 이벤트 ID 복사
+      navigator.clipboard.writeText(data[0].id);
+
       toast({
         title: "이벤트가 생성되었습니다!",
-        description: "이벤트 ID: " + data[0].id,
+        description: "이벤트 ID가 클립보드에 복사되었습니다.",
       });
     } catch (error) {
       console.error('Error creating event:', error);
@@ -91,7 +94,14 @@ export default function CreateEvent() {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>날짜 범위</FormLabel>
-                <DateRangePicker {...field} />
+                <DateRangePicker
+                  {...field}
+                  onValueChange={(range) => {
+                    if (range?.from && range?.to) {
+                      field.onChange({ from: range.from, to: range.to });
+                    }
+                  }}
+                />
                 <FormMessage />
               </FormItem>
             )}
